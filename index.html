@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>FIRST WAVE FRIES - Employee Data</title>
+<style>
+:root {
+  --bg-color: #f9fbfd;
+  --text-color: #333;
+  --card-bg: #fff;
+  --header-bg: #ffcc00;
+  --button-color: #007bff;
+  --edit-color: #28a745;
+  --delete-color: #dc3545;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+header {
+  background: var(--header-bg);
+  padding: 15px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+header h1 { margin:0; font-weight:900; font-size:22px; text-align:center; flex:1; }
+header img { height: 60px; max-width: 100px; object-fit: contain; }
+
+.header-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+.header-buttons button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+.dark-btn { background-color: #333; color: #fff; }
+.dark-btn:hover { background-color: #555; }
+.light-btn { background-color: #f0f0f0; color: #333; }
+.light-btn:hover { background-color: #ddd; }
+.upload-btn { background-color: #007bff; color: #fff; }
+.upload-btn:hover { background-color: #0056b3; }
+
+.container { max-width: 1100px; width: 95%; margin: 30px auto 60px; }
+
+.card { background: var(--card-bg); border-radius: 12px; box-shadow:0 7px 22px rgba(0,0,0,0.07); padding: 25px 30px; margin-bottom: 25px; }
+.card h2 { font-weight: 700; margin-bottom: 20px; }
+
+.row { display:flex; gap:16px; margin-bottom:18px; flex-wrap:wrap; }
+input[type="text"], input[type="date"], textarea {
+  flex: 1 1 200px; padding:12px 14px; font-size:15px; border-radius:7px; border:1.5px solid #ccc; font-family:inherit; background:#fff; color:#333; transition:border-color 0.3s ease;
+}
+textarea { min-height:60px; resize: vertical; }
+input:focus, textarea:focus { border-color: #ffb700; outline:none; }
+
+button.save-btn {
+  background-color: var(--button-color); color:#fff; border:none; padding:14px 28px; font-size:16px; font-weight:600; border-radius:8px; cursor:pointer;
+}
+button.save-btn:hover { background-color:#0056b3; }
+
+.employee-card {
+  background: #fefefe;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+.employee-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; cursor:pointer; font-weight:600; font-size:16px;
+  border-bottom:1px solid #ddd; border-radius:10px;
+  background:#f0f0f0;
+}
+.employee-details { display:none; padding:12px 16px; font-size:14px; color:#333; }
+.employee-details div { margin-bottom:6px; }
+
+.employee-details button {
+  padding:6px 12px; font-size:13px; border:none; border-radius:6px; margin-right:6px; cursor:pointer; font-weight:600;
+}
+.employee-details .edit-btn { background-color:var(--edit-color); color:#fff; }
+.employee-details .edit-btn:hover { background-color:#1e7e34; }
+.employee-details .delete-btn { background-color:var(--delete-color); color:#fff; }
+.employee-details .delete-btn:hover { background-color:#b52a37; }
+
+footer { background:#222; color:#aaa; font-size:13px; text-align:center; padding:15px 10px; }
+
+@media (max-width: 600px) {
+  .row { flex-direction: column; }
+  input, textarea, button.save-btn { width:100%; }
+  header h1 { font-size:18px; width:100%; text-align:center; }
+  header img { height:50px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <input type="file" id="logoInput" accept="image/*" style="display:none"/>
+  <div class="header-buttons">
+    <button class="dark-btn" onclick="enableDarkMode()">Dark Mode</button>
+    <button class="light-btn" onclick="enableLightMode()">Light Mode</button>
+    <button class="upload-btn" onclick="document.getElementById('logoInput').click()">Upload Logo</button>
+  </div>
+  <img id="logo" src="logo.png" alt="Logo" />
+  <h1>FIRST WAVE FRIES – EMPLOYEE DATA</h1>
+</header>
+
+<main class="container">
+  <section class="card">
+    <h2>Add / Edit Employee</h2>
+    <form id="employeeForm" autocomplete="off">
+      <div class="row">
+        <input type="text" id="name" placeholder="Employee Name" required />
+        <input type="text" id="contact" placeholder="Contact Number" required />
+        <input type="text" id="emergency" placeholder="Emergency Contact" required />
+      </div>
+      <div class="row">
+        <input type="text" id="idcard" placeholder="ID Card Number" required />
+      </div>
+      <div class="row">
+        <div>
+          <label for="pgStart">Start PG</label>
+          <input type="date" id="pgStart" />
+        </div>
+        <div>
+          <label for="pgEnd">End PG</label>
+          <input type="date" id="pgEnd" />
+        </div>
+      </div>
+      <div class="row">
+        <textarea id="address" placeholder="Address"></textarea>
+      </div>
+      <div class="row">
+        <div>
+          <label for="trainingStart">Start Training</label>
+          <input type="date" id="trainingStart" />
+        </div>
+        <div>
+          <label for="trainingEnd">End Training</label>
+          <input type="date" id="trainingEnd" />
+        </div>
+      </div>
+      <button class="save-btn" type="submit">Save Employee</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Employee List</h2>
+    <div id="employeeList"></div>
+  </section>
+</main>
+
+<footer>
+  &copy; FIRST WAVE FRIES | Employee Management System
+</footer>
+
+<script>
+const form = document.getElementById("employeeForm");
+const employeeList = document.getElementById("employeeList");
+const logoInput = document.getElementById("logoInput");
+const logoImg = document.getElementById("logo");
+let employees = JSON.parse(localStorage.getItem("employees")) || [];
+let editIndex = null;
+
+function formatDate(dateStr) {
+  if(!dateStr) return "N/A";
+  const d = new Date(dateStr);
+  return isNaN(d) ? "N/A" : d.toLocaleDateString();
+}
+
+function renderEmployees() {
+  employeeList.innerHTML = "";
+  employees.forEach((emp, index) => {
+    const card = document.createElement("div");
+    card.className = "employee-card";
+
+    card.innerHTML = `
+      <div class="employee-header">${emp.name} - ${emp.idcard}</div>
+      <div class="employee-details">
+        <div><strong>Contact:</strong> ${emp.contact}</div>
+        <div><strong>Emergency:</strong> ${emp.emergency}</div>
+        <div><strong>Start PG:</strong> ${formatDate(emp.pgStart)}</div>
+        <div><strong>End PG:</strong> ${formatDate(emp.pgEnd)}</div>
+        <div><strong>Address:</strong> ${emp.address || "N/A"}</div>
+        <div><strong>Start Training:</strong> ${formatDate(emp.trainingStart)}</div>
+        <div><strong>End Training:</strong> ${formatDate(emp.trainingEnd)}</div>
+        <div>
+          <button class="edit-btn" onclick="editEmployee(${index})">Edit</button>
+          <button class="delete-btn" onclick="deleteEmployee(${index})">Delete</button>
+        </div>
+      </div>
+    `;
+
+    const header = card.querySelector(".employee-header");
+    const details = card.querySelector(".employee-details");
+    header.addEventListener("click", ()=>details.style.display = details.style.display === "block" ? "none" : "block");
+
+    employeeList.appendChild(card);
+  });
+}
+
+function deleteEmployee(index) {
+  if(confirm("Are you sure you want to delete this employee?")){
+    employees.splice(index,1);
+    localStorage.setItem("employees", JSON.stringify(employees));
+    renderEmployees();
+    if(editIndex === index) resetForm();
+  }
+}
+
+function editEmployee(index){
+  const emp = employees[index];
+  document.getElementById("name").value = emp.name;
+  document.getElementById("contact").value = emp.contact;
+  document.getElementById("emergency").value = emp.emergency;
+  document.getElementById("idcard").value = emp.idcard;
+  document.getElementById("pgStart").value = emp.pgStart;
+  document.getElementById("pgEnd").value = emp.pgEnd;
+  document.getElementById("address").value = emp.address;
+  document.getElementById("trainingStart").value = emp.trainingStart;
+  document.getElementById("trainingEnd").value = emp.trainingEnd;
+  editIndex = index;
+  form.querySelector(".save-btn").textContent = "Update Employee";
+  form.querySelector(".save-btn").style.backgroundColor = "#28a745";
+}
+
+function resetForm(){
+  form.reset();
+  editIndex = null;
+  form.querySelector(".save-btn").textContent = "Save Employee";
+  form.querySelector(".save-btn").style.backgroundColor = "#007bff";
+}
+
+form.addEventListener("submit", e=>{
+  e.preventDefault();
+  const emp = {
+    name: document.getElementById("name").value.trim(),
+    contact: document.getElementById("contact").value.trim(),
+    emergency: document.getElementById("emergency").value.trim(),
+    idcard: document.getElementById("idcard").value.trim(),
+    pgStart: document.getElementById("pgStart").value,
+    pgEnd: document.getElementById("pgEnd").value,
+    address: document.getElementById("address").value.trim(),
+    trainingStart: document.getElementById("trainingStart").value,
+    trainingEnd: document.getElementById("trainingEnd").value
+  };
+  if(editIndex!==null) employees[editIndex] = emp;
+  else employees.push(emp);
+
+  localStorage.setItem("employees", JSON.stringify(employees));
+  renderEmployees();
+  resetForm();
+});
+
+renderEmployees();
+
+// Dark / Light Mode
+function enableDarkMode(){
+  document.documentElement.style.setProperty('--bg-color','#121212');
+  document.documentElement.style.setProperty('--text-color','#e0e0e0');
+  document.documentElement.style.setProperty('--card-bg','#1f1f1f');
+  document.documentElement.style.setProperty('--header-bg','#1a1a1a');
+  document.documentElement.style.setProperty('--button-color','#1a73e8');
+  document.documentElement.style.setProperty('--edit-color','#28a745');
+  document.documentElement.style.setProperty('--delete-color','#dc3545');
+}
+function enableLightMode(){
+  document.documentElement.style.setProperty('--bg-color','#f9fbfd');
+  document.documentElement.style.setProperty('--text-color','#333');
+  document.documentElement.style.setProperty('--card-bg','#fff');
+  document.documentElement.style.setProperty('--header-bg','#ffcc00');
+  document.documentElement.style.setProperty('--button-color','#007bff');
+  document.documentElement.style.setProperty('--edit-color','#28a745');
+  document.documentElement.style.setProperty('--delete-color','#dc3545');
+}
+
+// Upload Logo
+logoInput.addEventListener('change', function(){
+  const file = this.files[0];
+  if(file){
+    const reader = new FileReader();
+    reader.onload = function(e){ logoImg.src = e.target.result; }
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+</body>
+</html>
